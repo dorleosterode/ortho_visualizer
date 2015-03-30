@@ -14,9 +14,20 @@ main = do
 svgDoc :: S.Svg
 svgDoc = S.docTypeSvg ! A.version "1.1" ! A.width "300" ! A.height "300" ! A.viewbox "0 0 30 30" $ do
   S.g ! A.transform makeTransform $ do
-  makeCDS 1 5 0 True
-  makeCDS 1 5 10 False
+  makeCDSs lst
   connectCDS 6 2 10 2 False
+
+lst = [(1, 5, 0, True), (1, 5, 10, False)]
+
+first (x, _, _, _) = x
+second (_, y, _, _) = y
+third (_, _, z, _) = z
+forth (_, _, _, a) = a
+
+makeCDSs :: [(Int,Int,Int,Bool)] -> S.Svg
+makeCDSs [x] = makeCDS (first x) (second x) (third x) (forth x)
+makeCDSs (x:xs) = do makeCDS (first x) (second x) (third x) (forth x)
+                     makeCDSs xs
 
 makePath :: Int -> Int -> Int -> Int -> S.AttributeValue
 makePath x1 y1 x2 y2 = mkPath $ do
