@@ -19,14 +19,18 @@ svgDoc = S.docTypeSvg ! A.version "1.1" ! A.width "300" ! A.height "300" ! A.vie
 
 lst = [(1, 5, 0, True), (1, 5, 10, False)]
 
-first (x, _, _, _) = x
-second (_, y, _, _) = y
-third (_, _, z, _) = z
-forth (_, _, _, a) = a
+first4 (x, _, _, _) = x
+second4 (_, y, _, _) = y
+third4 (_, _, z, _) = z
+forth4 (_, _, _, a) = a
+
+first3 (x, _, _) = x
+second3 (_, y, _) = y
+third3 (_, _, z) = z
 
 makeCDSs :: [(Int,Int,Int,Bool)] -> S.Svg
-makeCDSs [x] = makeCDS (first x) (second x) (third x) (forth x)
-makeCDSs (x:xs) = do makeCDS (first x) (second x) (third x) (forth x)
+makeCDSs [x] = makeCDS (first4 x) (second4 x) (third4 x) (forth4 x)
+makeCDSs (x:xs) = do makeCDS (first4 x) (second4 x) (third4 x) (forth4 x)
                      makeCDSs xs
 
 makePath :: Int -> Int -> Int -> Int -> S.AttributeValue
@@ -37,6 +41,19 @@ makePath x1 y1 x2 y2 = mkPath $ do
 connectCDS :: Int -> Int -> Int -> Int -> Bool -> S.Svg
 connectCDS x1 y1 x2 y2 direct = S.path ! (A.d $ makePath x1 y1 x2 y2) ! A.stroke "#000000" ! A.strokeWidth "0.2" ! A.strokeDasharray (if direct then "0,0" else "0.5,0.5")
 
+connectCDSs :: [((Int, Int, Int, Bool), (Int, Int, Int, Bool), Bool)] -> S.Svg
+connectCDSs [x] = let
+                     c1 = first3 x
+                     c2 = second3 x
+                     dir = third3 x
+                  in connectCDS ((third4 c1) + 1 + (second4 c1)) ((first4 c1) + 1) (third4 c2) ((first4 c2) + 1) dir
+connectCDSs (x:xs) = do
+                       (let
+                          c1 = first3 x
+                          c2 = second3 x
+                          dir = third3 x
+                        in connectCDS ((third4 c1) + 1 + (second4 c1)) ((first4 c1) + 1) (third4 c2) ((first4 c2) + 1) dir)
+                       connectCDSs xs
 
 makeTransform :: S.AttributeValue
 makeTransform = rotate 0
