@@ -41,18 +41,17 @@ makePath x1 y1 x2 y2 = mkPath $ do
 connectCDS :: Int -> Int -> Int -> Int -> Bool -> S.Svg
 connectCDS x1 y1 x2 y2 direct = S.path ! (A.d $ makePath x1 y1 x2 y2) ! A.stroke "#000000" ! A.strokeWidth "0.2" ! A.strokeDasharray (if direct then "0,0" else "0.5,0.5")
 
+connectCDSfromContigs :: ((Int, Int, Int, Bool), (Int, Int, Int, Bool), Bool) -> S.Svg
+connectCDSfromContigs x = let
+                             c1 = first3 x
+                             c2 = second3 x
+                             dir = third3 x
+                          in connectCDS ((third4 c1) + 1 + (second4 c1)) ((first4 c1) + 1) (third4 c2) ((first4 c2) + 1) dir
+
 connectCDSs :: [((Int, Int, Int, Bool), (Int, Int, Int, Bool), Bool)] -> S.Svg
-connectCDSs [x] = let
-                     c1 = first3 x
-                     c2 = second3 x
-                     dir = third3 x
-                  in connectCDS ((third4 c1) + 1 + (second4 c1)) ((first4 c1) + 1) (third4 c2) ((first4 c2) + 1) dir
+connectCDSs [x] = connectCDSfromContigs x
 connectCDSs (x:xs) = do
-                       (let
-                          c1 = first3 x
-                          c2 = second3 x
-                          dir = third3 x
-                        in connectCDS ((third4 c1) + 1 + (second4 c1)) ((first4 c1) + 1) (third4 c2) ((first4 c2) + 1) dir)
+                       connectCDSfromContigs x
                        connectCDSs xs
 
 makeTransform :: S.AttributeValue
