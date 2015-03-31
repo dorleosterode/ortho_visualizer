@@ -15,9 +15,12 @@ svgDoc :: S.Svg
 svgDoc = S.docTypeSvg ! A.version "1.1" ! A.width "300" ! A.height "300" ! A.viewbox "0 0 30 30" $ do
   S.g ! A.transform makeTransform $ do
   makeCDSs lst
-  connectCDS 6 2 10 2 False
+  connectCDSs clst
 
-lst = [(1, 5, 0, True), (1, 5, 10, False)]
+c1 = (1, 5, 0, True)
+c2 = (1, 5, 10, False)
+lst = [c1, c2]
+clst = [(c1, c2, False)]
 
 first4 (x, _, _, _) = x
 second4 (_, y, _, _) = y
