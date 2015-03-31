@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+import System.IO
 import Text.Printf
 import Text.Blaze
 import Text.Blaze.Svg11 ((!), mkPath, rotate, l, m)
@@ -10,7 +11,8 @@ import Text.Blaze.Svg.Renderer.String (renderSvg)
 main :: IO ()
 main = do
   let a = renderSvg svgDoc
-  putStrLn a
+  withFile "bar.svg" WriteMode
+    (\handle -> hPutStr handle a)
 
 svgDoc :: S.Svg
 svgDoc = S.docTypeSvg ! A.version "1.1" ! A.width "300" ! A.height "300" ! A.viewbox "0 0 30 30" $ do
