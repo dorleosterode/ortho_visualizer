@@ -35,8 +35,8 @@ second3 (_, y, _) = y
 third3 (_, _, z) = z
 
 -- example function to transform the whole image
--- makeTransform :: S.AttributeValue
--- makeTransform = rotate 0
+makeTransform :: S.AttributeValue
+makeTransform = rotate 0
 
 -- functions to draw contigs
 makeCDSs :: [(Int,Int,Int,Bool)] -> S.Svg
